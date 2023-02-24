@@ -59,6 +59,13 @@ const putPerfilUsuario = async (req = request, res = response) => {
     const { id } = req.params;
     const { _id, img, estado, google, rol, ...resto } = req.body;
 
+    const idGuardado = req.usuario.id;
+    if (idGuardado != id) {
+        return res.status(401).json({
+            msg: 'Solo puede modificar su propio perfil'
+        })
+    }
+
     if (resto.password) {
         const salt = bcrypt.genSaltSync();
         resto.password = bcrypt.hashSync(resto.password, salt);

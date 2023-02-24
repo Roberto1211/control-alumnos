@@ -1,11 +1,26 @@
 const { response, request } = require('express');
 const Curso = require('../models/curso');
 
+const getCursos = async (req = request, res = response) => {
+
+    const query = { estado: true };
+
+    const listaCursos = await Promise.all([
+        Curso.countDocuments(query),
+        Curso.find(query)
+    ]);
+
+    res.json({
+        listaCursos
+    });
+
+}
+
 const getCursosAsignados = async (req, res) => {
-    const { usuario } = req.body;
+    const { id } = req.params;
 
     try {
-        const cursosAsignados = await Curso.find({ usuario: usuario });
+        const cursosAsignados = await Curso.find({ usuario: id });
 
         res.json(cursosAsignados);
     } catch (error) {
@@ -87,13 +102,15 @@ const putCurso = async (req = request, res = response) => {
         const curso = await Curso.findById(id);
 
         curso.nombreCurso = nombreCurso;
-        
+
         const index = curso.usuario.indexOf(usuario);
 
-        if (index === -1) {
-            curso.usuario.addToSet(usuario);
-        } else {
-            curso.usuario.splice(index, 1);
+        if (usuario) {
+            if (index === -1) {
+                curso.usuario.addToSet(usuario);
+            } else {
+                curso.usuario.splice(index, 1);
+            }
         }
 
         const cursoActualizado = await curso.save();
@@ -113,7 +130,7 @@ const putCurso = async (req = request, res = response) => {
 const deleteCurso = async (req = request, res = response) => {
     const { id } = req.params;
 
-    const cursoEliminado = await Curso.findByIdAndUpdate(id , {estado: false, usuario: []});
+    const cursoEliminado = await Curso.findByIdAndUpdate(id, { estado: false, usuario: [] });
 
     res.json({
         msg: 'DELETE eliminar curso',
@@ -122,6 +139,7 @@ const deleteCurso = async (req = request, res = response) => {
 }
 
 module.exports = {
+    getCursos,
     getCursosAsignados,
     putAsignCursos,
     postCurso,

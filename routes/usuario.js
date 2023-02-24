@@ -5,7 +5,6 @@ const { esRoleValido, emailExiste, existeUsuarioPorId } = require('../helpers/db
 const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const { tieneRole } = require('../middlewares/validar-roles');
-const { esAlumno } = require('../middlewares/validar-alumno');
 
 const router = Router();
 
@@ -36,14 +35,14 @@ router.put('/editarPerfil/:id', [
     check('id', 'No es un ID válido').isMongoId(),
     check('id').custom( existeUsuarioPorId ),
     validarCampos,
-    esAlumno
+    tieneRole('ALUMNO_ROL')
 ] ,putPerfilUsuario);
 
 router.delete('/eliminarPerfil/:id', [
     validarJWT,
     check('id', 'No es un ID válido').isMongoId(),
     check('id').custom( existeUsuarioPorId ),
-    esAlumno,
+    tieneRole('ALUMNO_ROL'),
     validarCampos
 ] ,deletePerfilUsuario);
 

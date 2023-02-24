@@ -8,7 +8,6 @@ const cursoSchema = Schema({
     usuario: [{
         type: Schema.Types.ObjectId,
         ref: 'Usuario',
-        required: true
     }],
     estado: {
         type: Boolean,

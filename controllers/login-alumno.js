@@ -14,7 +14,7 @@ const loginAlumno = async (req = request, res = response) => {
 
         if ( !usuario ) {
             return res.status(400).json({
-                msg: 'Usuario / Password no son correctos - (El correo no existe jaja)'
+                msg: 'Usuario / Password no son correctos - (El correo no existe)'
             });
         }
 
@@ -42,7 +42,6 @@ const loginAlumno = async (req = request, res = response) => {
         const token = await generarJWT( usuario.id );
 
         res.json({
-            msg: 'Login PATH',
             correo, password,
             token
         })
